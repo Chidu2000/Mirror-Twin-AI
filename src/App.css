@@ -1,0 +1,99 @@
+/* Theme tokens */
+.theme-dark {
+  --page-bg: radial-gradient(1200px 600px at 15% -10%, rgba(244, 63, 94, 0.18), transparent 60%),
+    linear-gradient(135deg, #0b0f19 0%, #111827 55%, #0b1020 100%);
+  --panel: rgba(15, 23, 42, 0.75);
+  --panel-strong: rgba(2, 6, 23, 0.85);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --text: #f8fafc;
+  --muted: rgba(248, 250, 252, 0.7);
+  --accent: #fb7185;
+  --header-border: linear-gradient(90deg, rgba(244, 63, 94, 0.7), rgba(251, 113, 133, 0.6), rgba(251, 146, 60, 0.7));
+  --accent-grad: linear-gradient(90deg, rgba(220, 38, 38, 0.95), rgba(244, 63, 94, 0.9));
+  --accent-grad-hover: linear-gradient(90deg, rgba(239, 68, 68, 0.95), rgba(251, 113, 133, 0.9));
+  --success-grad: linear-gradient(90deg, rgba(16, 185, 129, 0.9), rgba(45, 212, 191, 0.9));
+  --success-grad-hover: linear-gradient(90deg, rgba(52, 211, 153, 0.9), rgba(94, 234, 212, 0.9));
+  --motivation-grad: linear-gradient(90deg, rgba(220, 38, 38, 0.9), rgba(244, 63, 94, 0.9), rgba(251, 146, 60, 0.8));
+  --motivation-text: #f8fafc;
+  --button-text: #f8fafc;
+}
+
+.theme-light {
+  --page-bg: radial-gradient(900px 500px at 10% -10%, rgba(59, 130, 246, 0.2), transparent 60%),
+    linear-gradient(135deg, #f8fafc 0%, #e2e8f0 55%, #f1f5f9 100%);
+  --panel: rgba(255, 255, 255, 0.9);
+  --panel-strong: rgba(255, 255, 255, 0.95);
+  --panel-border: rgba(15, 23, 42, 0.08);
+  --text: #0f172a;
+  --muted: rgba(15, 23, 42, 0.6);
+  --accent: #2563eb;
+  --header-border: linear-gradient(90deg, rgba(37, 99, 235, 0.6), rgba(59, 130, 246, 0.5), rgba(14, 165, 233, 0.6));
+  --accent-grad: linear-gradient(90deg, rgba(37, 99, 235, 0.95), rgba(14, 165, 233, 0.9));
+  --accent-grad-hover: linear-gradient(90deg, rgba(59, 130, 246, 0.95), rgba(56, 189, 248, 0.9));
+  --success-grad: linear-gradient(90deg, rgba(16, 185, 129, 0.9), rgba(34, 197, 94, 0.9));
+  --success-grad-hover: linear-gradient(90deg, rgba(34, 197, 94, 0.9), rgba(74, 222, 128, 0.9));
+  --motivation-grad: linear-gradient(90deg, rgba(37, 99, 235, 0.9), rgba(14, 165, 233, 0.9), rgba(59, 130, 246, 0.85));
+  --motivation-text: #0f172a;
+  --button-text: #ffffff;
+}
+
+.theme-aurora {
+  --page-bg: radial-gradient(900px 500px at 20% -10%, rgba(34, 197, 94, 0.2), transparent 60%),
+    linear-gradient(135deg, #0f172a 0%, #0b1d2a 55%, #0f172a 100%);
+  --panel: rgba(15, 23, 42, 0.78);
+  --panel-strong: rgba(2, 6, 23, 0.88);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --text: #f8fafc;
+  --muted: rgba(248, 250, 252, 0.7);
+  --accent: #22d3ee;
+  --header-border: linear-gradient(90deg, rgba(34, 197, 94, 0.7), rgba(34, 211, 238, 0.6), rgba(168, 85, 247, 0.6));
+  --accent-grad: linear-gradient(90deg, rgba(34, 197, 94, 0.95), rgba(34, 211, 238, 0.9));
+  --accent-grad-hover: linear-gradient(90deg, rgba(74, 222, 128, 0.95), rgba(103, 232, 249, 0.9));
+  --success-grad: linear-gradient(90deg, rgba(34, 197, 94, 0.9), rgba(34, 211, 238, 0.9));
+  --success-grad-hover: linear-gradient(90deg, rgba(74, 222, 128, 0.9), rgba(103, 232, 249, 0.9));
+  --motivation-grad: linear-gradient(90deg, rgba(34, 197, 94, 0.9), rgba(34, 211, 238, 0.85), rgba(168, 85, 247, 0.8));
+  --motivation-text: #f8fafc;
+  --button-text: #f8fafc;
+}
+
+.theme-bg {
+  background-image: var(--page-bg);
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.panel {
+  background-color: var(--panel);
+  border: 1px solid var(--panel-border);
+}
+
+.panel-strong {
+  background-color: var(--panel-strong);
+  border: 1px solid var(--panel-border);
+}
+
+.header-shell {
+  background-image: var(--header-border);
+}
+
+.motivation-banner {
+  background-image: var(--motivation-grad);
+}
+
+.btn-accent {
+  background-image: var(--accent-grad);
+  color: var(--button-text);
+}
+
+.btn-accent:hover {
+  background-image: var(--accent-grad-hover);
+}
+
+.btn-success {
+  background-image: var(--success-grad);
+  color: var(--button-text);
+}
+
+.btn-success:hover {
+  background-image: var(--success-grad-hover);
+}

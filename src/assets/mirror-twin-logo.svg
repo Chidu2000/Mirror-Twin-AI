@@ -1,0 +1,20 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="mtGrad" x1="0" y1="0" x2="128" y2="128">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#EC4899"/>
+    </linearGradient>
+    <linearGradient id="mtGlow" x1="0" y1="0" x2="128" y2="0">
+      <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#F472B6" stop-opacity="0.6"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="116" height="116" rx="28" fill="#0F172A"/>
+  <rect x="6" y="6" width="116" height="116" rx="28" stroke="url(#mtGlow)" stroke-width="2"/>
+  <path d="M40 96C40 76.1177 52.1177 64 72 64C91.8823 64 104 76.1177 104 96" stroke="url(#mtGrad)" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="52" cy="52" r="14" fill="url(#mtGrad)"/>
+  <circle cx="76" cy="52" r="14" fill="url(#mtGrad)" opacity="0.85"/>
+  <path d="M32 64C44 52 56 48 64 48C72 48 84 52 96 64" stroke="url(#mtGlow)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M44 52H60" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+  <path d="M68 52H84" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+</svg>
