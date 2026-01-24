@@ -11,7 +11,7 @@ Add a short demo video or GIF here.
 - Guided setup for name, resolution, and struggles
 - Daily journaling with a 5‑entry limit
 - Streak and consistency dashboard widgets
-- AI motivation summary + progress evaluation
+- AI agent orchestration for daily motivation + progress evaluation
 - Strategy checklist tailored to evolution stage
 - Chat with your “future self”
 
@@ -19,17 +19,20 @@ Add a short demo video or GIF here.
 
 - React + TypeScript + Vite
 - Tailwind CSS
-- Google Gemini API (via client calls)
+- AI agents powered by Google Gemini
+  - Daily motivation agent
+  - Progress evaluation agent
+  - Strategy observer + strategist
 
 ## Getting Started
 
 1. Install dependencies:
-   - `npm install`
+   - `bun install`
 2. Create a `.env` from the example:
    - `cp .env.example .env`
 3. Add your API keys to `.env`
 4. Start the dev server:
-   - `npm run dev`
+   - `bun run dev`
 
 ## Environment Variables
 
@@ -38,10 +41,15 @@ Add a short demo video or GIF here.
 
 ## Scripts
 
-- `npm run dev`
-- `npm run build`
-- `npm run preview`
+- `bun run dev`
+- `bun run build`
+- `bun run preview`
 
-## Notes
+## AI Agent Architecture
 
-If you plan to deploy, move API calls to a server to keep keys private.
+Mirror Twin is built around a small multi‑agent workflow that runs daily:
+
+- **Observer agent**: analyzes recent journal entries and patterns
+- **Strategy agent**: recommends tactical actions for the current evolution stage
+- **Motivation agent**: generates a personalized daily motivation summary
+- **Progress evaluator**: scores daily progress from entries (0–7)
