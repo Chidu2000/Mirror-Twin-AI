@@ -25,7 +25,7 @@ export default function ChatWindow({
   }, [chatHistory, isLoading]);
 
   return (
-    <div className="flex flex-col panel backdrop-blur-md rounded-3xl px-6 pt-5 pb-6 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.7)]">
+    <div className="flex flex-col panel backdrop-blur-md rounded-3xl px-6 pt-5 pb-6 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.7)] h-[673px] max-h-[673px]">
       <div className="flex items-center gap-2 mb-4">
         <MessageCircle className="w-5 h-5 text-[var(--accent)]" />
         <h3 className="text-lg font-semibold text-[var(--text)]">Chat with Your Twin</h3>

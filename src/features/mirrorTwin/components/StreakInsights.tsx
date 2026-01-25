@@ -20,7 +20,7 @@ function getUniqueDateSet(entries: JournalEntry[]) {
 
 function getCurrentStreak(dateSet: Set<string>, today: string) {
   let streak = 0;
-  let cursor = parseDateKey(today);
+  const cursor = parseDateKey(today);
   while (dateSet.has(toDateKey(cursor))) {
     streak += 1;
     cursor.setDate(cursor.getDate() - 1);

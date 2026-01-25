@@ -1,10 +1,11 @@
+import { createOpikTrace, flushOpik, queueTraceEvaluation } from './opikService';
+
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 function buildMotivationPrompt(params: {
   resolution: string;
   evolutionStage: string;
 }) {
-  // We move the "Identity" to a system-style instruction and use grounded language
   return `
 Write a short message to your past self. 
 Resolution: "${params.resolution}"
@@ -24,9 +25,16 @@ export async function generateDailyMotivation(params: {
   evolutionStage: string;
 }) {
   const prompt = buildMotivationPrompt(params);
+  const trace = await createOpikTrace({
+    name: 'agent.motivation',
+    input: { resolution: params.resolution, evolutionStage: params.evolutionStage },
+    metadata: { model: 'gemini-3-flash-preview', promptVersion: 'motivation-v1' },
+    tags: ['agent', 'motivation'],
+  });
+  const startTime = performance.now();
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${GEMINI_API_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -47,8 +55,25 @@ export async function generateDailyMotivation(params: {
     }
   );
   const result = await response.json();  
-  // Parse the text part which is now guaranteed to be a valid JSON string
   const content = JSON.parse(result.candidates[0]?.content?.parts?.[0]?.text);
+  const latencyMs = Math.round(performance.now() - startTime);
+
+  trace?.span({
+    name: 'llm.generate_motivation',
+    type: 'llm',
+    input: { prompt },
+    output: { summary: content.summary },
+    metadata: { model: 'gemini-3-flash-preview', provider: 'google', latencyMs },
+  });
+  trace?.update({ output: { summary: content.summary } });
+  trace?.end();
+
+  queueTraceEvaluation(trace, {
+    input: prompt,
+    output: content.summary,
+    labelPrefix: 'motivation',
+  });
+  await flushOpik();
   console.log('response from gemini:', content.summary);
   return content.summary;
 }

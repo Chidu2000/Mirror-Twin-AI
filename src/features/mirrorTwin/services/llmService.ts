@@ -1,4 +1,5 @@
 import type { LLMArgs } from '../types'
+import { createOpikTrace, flushOpik, queueTraceEvaluation } from './opikService'
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY
 
@@ -28,9 +29,22 @@ Guidelines:
 
 export async function sendToMirrorTwin(args: LLMArgs): Promise<string> {
   const systemPrompt = buildSystemPrompt(args);
+  const trace = await createOpikTrace({
+    name: 'agent.chat_twin',
+    input: {
+      userName: args.userName,
+      resolution: args.resolution,
+      struggles: args.struggles,
+      progressLevel: args.progressLevel,
+      recentJournal: args.journalEntries.slice(-3),
+    },
+    metadata: { model: 'gemini-3-flash-preview', promptVersion: 'chat-v1' },
+    tags: ['agent', 'chat'],
+  });
+  const startTime = performance.now();
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${GEMINI_API_KEY}`,
     {
       method: 'POST',
       headers: {
@@ -52,7 +66,6 @@ export async function sendToMirrorTwin(args: LLMArgs): Promise<string> {
   )
 
   if (!response.ok) {
-    // It's helpful to log the error text to debug specific API refusals
     const errorText = await response.text(); 
     throw new Error(
       `LLM request failed: ${response.status} ${response.statusText} - ${errorText}`
@@ -61,11 +74,31 @@ export async function sendToMirrorTwin(args: LLMArgs): Promise<string> {
 
   const data = await response.json()
 
-  // 3. Response parsing matches the new structure
   const assistantText =
     data.candidates?.[0]?.content?.parts
       ?.map((part: { text?: string }) => part.text)
       .join('') ?? null
+
+  if (assistantText) {
+    const latencyMs = Math.round(performance.now() - startTime);
+
+    trace?.span({
+      name: 'llm.generate_chat',
+      type: 'llm',
+      input: { prompt: systemPrompt },
+      output: { response: assistantText },
+      metadata: { model: 'gemini-3-flash-preview', provider: 'google', latencyMs },
+    });
+    trace?.update({ output: { response: assistantText } });
+    trace?.end();
+
+    queueTraceEvaluation(trace, {
+      input: systemPrompt,
+      output: assistantText,
+      labelPrefix: 'chat_twin',
+    });
+    await flushOpik();
+  }
 
   return assistantText || "Sorry, I didn't get a response from the LLM."
 }

@@ -60,7 +60,6 @@ export default function MirrorTwinApp() {
       setProgressLoggedToday(daily.progressLogged);
     }
 
-    // 🔥 Run agents once we have user + journal
     if (user) {
       try {
         const agentResult = await runDailyAgents({
@@ -123,7 +122,6 @@ export default function MirrorTwinApp() {
     try {
       if (progressLoggedToday) return;
 
-      // 1️⃣ Use ALL journal entries from today
       const todaysEntries = journalEntries.filter(e => e.date === TODAY);
 
       if (todaysEntries.length === 0) {
@@ -137,11 +135,9 @@ export default function MirrorTwinApp() {
       const safeDelta = Math.max(0, Math.min(progressDelta, 7));
       const newProgress = Math.min(100, progressLevel + safeDelta);
 
-      // 2️⃣ Update evolution-driving state
       setProgressLevel(newProgress);
       setProgressLoggedToday(true);
 
-      // 3️⃣ Add AI reasoning to the *last* entry for today (optional)
       const updatedJournal = journalEntries.map(entry => {
         if (entry.date === TODAY) {
           return {
@@ -155,7 +151,6 @@ export default function MirrorTwinApp() {
 
       setJournalEntries(updatedJournal);
 
-      // 4️⃣ Persist to storage
       await storageService.set('mirror-twin-journal', updatedJournal);
       await storageService.set('mirror-twin-user', {
         userName,
@@ -164,7 +159,6 @@ export default function MirrorTwinApp() {
         progressLevel: newProgress,
       });
 
-      // we don't touch todayEntry here – that's just the textarea buffer
     } catch (err) {
       console.error('Error logging progress:', err);
       alert('Failed to log progress. Try again.');
@@ -209,7 +203,6 @@ export default function MirrorTwinApp() {
       <div className="max-w-7xl mx-auto">
         <Header evolution={evolution} progressLevel={progressLevel} journalEntries={journalEntries} />
 
-        {/* 🌅 Motivation + Resolution */}
         <div className="grid gap-6 lg:grid-cols-12 mb-6 items-start">
           <div className="lg:col-span-8">
             {dailyMotivation && dailyMotivation.date === TODAY ? (
