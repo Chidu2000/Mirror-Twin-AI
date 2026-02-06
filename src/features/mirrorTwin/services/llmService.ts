@@ -1,13 +1,13 @@
-import type { LLMArgs } from '../types'
-import { createOpikTrace, flushOpik, queueTraceEvaluation } from './opikService'
-
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY
+import type { LLMArgs } from '../types';
+import { createOpikTrace, flushOpik, queueTraceEvaluation } from './opikService';
+import { isUnsafeContent, requestGeminiText } from './llmClient';
+import { summarizeForTelemetry } from './privacy';
 
 function buildSystemPrompt(args: LLMArgs): string {
-  const recentJournal = args.journalEntries.slice(-3).join('; ')
+  const recentJournal = args.journalEntries.slice(-3).join('; ');
 
   return `
-You are ${args.userName}'s mirror twin — the future version of them who has already achieved:
+You are ${args.userName}'s mirror twin - the future version of them who has already achieved:
 "${args.resolution}"
 
 Your personality:
@@ -24,60 +24,63 @@ Guidelines:
 - Keep replies under 3 sentences
 - Use "we" language
 - Be encouraging, not preachy
-`
+`;
+}
+
+function buildConversationPrompt(args: LLMArgs) {
+  const recentMessages = args.messages.slice(-6);
+  const formatted = recentMessages
+    .map((message) => `${message.role === 'user' ? 'User' : 'Assistant'}: ${message.content}`)
+    .join('\n');
+
+  return `${buildSystemPrompt(args)}
+
+Conversation so far:
+${formatted}
+
+Reply to the user's latest message.`;
 }
 
 export async function sendToMirrorTwin(args: LLMArgs): Promise<string> {
-  const systemPrompt = buildSystemPrompt(args);
+  const latestUserMessage = [...args.messages]
+    .reverse()
+    .find((message) => message.role === 'user')?.content?.trim();
+
+  if (latestUserMessage && isUnsafeContent(latestUserMessage)) {
+    return 'Sorry, I cannot help with that request.';
+  }
+
+  const chatPrompt = buildConversationPrompt(args);
   const trace = await createOpikTrace({
     name: 'agent.chat_twin',
     input: {
-      userName: args.userName,
+      userNamePresent: Boolean(args.userName),
       resolution: args.resolution,
-      struggles: args.struggles,
+      strugglesPresent: Boolean(args.struggles),
       progressLevel: args.progressLevel,
-      recentJournal: args.journalEntries.slice(-3),
+      recentJournalCount: args.journalEntries.length,
+      messageCount: args.messages.length,
     },
     metadata: { model: 'gemini-3-flash-preview', promptVersion: 'chat-v1' },
     tags: ['agent', 'chat'],
   });
   const startTime = performance.now();
 
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${GEMINI_API_KEY}`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        // 1. Structure must be 'contents' -> 'parts' -> 'text'
-        contents: [{
-          parts: [{ text: systemPrompt }]
-        }],
-        // 2. Settings must be wrapped in 'generationConfig'
-        generationConfig: {
-          temperature: 0.7,
-          candidateCount: 1,
-          maxOutputTokens: 500,
-        }
-      }),
-    }
-  )
-
-  if (!response.ok) {
-    const errorText = await response.text(); 
-    throw new Error(
-      `LLM request failed: ${response.status} ${response.statusText} - ${errorText}`
-    )
-  }
-
-  const data = await response.json()
-
-  const assistantText =
-    data.candidates?.[0]?.content?.parts
-      ?.map((part: { text?: string }) => part.text)
-      .join('') ?? null
+  const assistantText = await requestGeminiText({
+    prompt: chatPrompt,
+    generationConfig: {
+      temperature: 0.7,
+      candidateCount: 1,
+      maxOutputTokens: 500,
+    },
+    guardrails: {
+      tone: 'supportive',
+      responseShape: { maxSentences: 3, stripEmoji: true },
+    },
+    responseShape: { maxSentences: 3, stripEmoji: true },
+    fallbackText: "Sorry, I'm having trouble responding right now.",
+    retry: { maxAttempts: 3, baseDelayMs: 350 },
+  });
 
   if (assistantText) {
     const latencyMs = Math.round(performance.now() - startTime);
@@ -85,20 +88,20 @@ export async function sendToMirrorTwin(args: LLMArgs): Promise<string> {
     trace?.span({
       name: 'llm.generate_chat',
       type: 'llm',
-      input: { prompt: systemPrompt },
-      output: { response: assistantText },
+      input: { promptSummary: summarizeForTelemetry(chatPrompt) },
+      output: { response: summarizeForTelemetry(assistantText) },
       metadata: { model: 'gemini-3-flash-preview', provider: 'google', latencyMs },
     });
-    trace?.update({ output: { response: assistantText } });
+    trace?.update({ output: { response: summarizeForTelemetry(assistantText) } });
     trace?.end();
 
     queueTraceEvaluation(trace, {
-      input: systemPrompt,
-      output: assistantText,
+      input: summarizeForTelemetry(chatPrompt),
+      output: summarizeForTelemetry(assistantText),
       labelPrefix: 'chat_twin',
     });
     await flushOpik();
   }
 
-  return assistantText || "Sorry, I didn't get a response from the LLM."
+  return assistantText || "Sorry, I didn't get a response from the LLM.";
 }

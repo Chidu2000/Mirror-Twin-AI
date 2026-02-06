@@ -1,3 +1,5 @@
+import { sanitizeTelemetryValue, summarizeForTelemetry } from './privacy';
+
 type FeedbackScore = {
   name: string;
   value: number;
@@ -82,9 +84,12 @@ export async function createOpikTrace(params: {
   const trace: TracePayload = {
     id,
     name: params.name,
-    input: params.input,
-    output: params.output ?? {},
-    metadata: { runId, app: 'mirror-twin', ...params.metadata },
+    input: sanitizeTelemetryValue(params.input) as Record<string, unknown>,
+    output: sanitizeTelemetryValue(params.output ?? {}) as Record<string, unknown>,
+    metadata: sanitizeTelemetryValue({ runId, app: 'mirror-twin', ...params.metadata }) as Record<
+      string,
+      unknown
+    >,
     tags: params.tags,
     spans: [],
     scores: [],
@@ -98,11 +103,18 @@ export async function createOpikTrace(params: {
     id,
     update: (updates) => {
       if (updates.output) {
-        trace.output = updates.output;
+        trace.output = sanitizeTelemetryValue(updates.output) as Record<string, unknown>;
       }
     },
     span: (span) => {
-      trace.spans.push(span);
+      trace.spans.push({
+        ...span,
+        input: span.input ? (sanitizeTelemetryValue(span.input) as Record<string, unknown>) : undefined,
+        output: sanitizeTelemetryValue(span.output),
+        metadata: span.metadata
+          ? (sanitizeTelemetryValue(span.metadata) as Record<string, unknown>)
+          : undefined,
+      });
       return { end: () => {} };
     },
     end: () => {
@@ -110,7 +122,10 @@ export async function createOpikTrace(params: {
       return handle;
     },
     score: (score) => {
-      trace.scores.push(score);
+      trace.scores.push({
+        ...score,
+        reason: score.reason ? summarizeForTelemetry(score.reason) : undefined,
+      });
     },
   };
 
@@ -129,7 +144,11 @@ export function queueTraceEvaluation(trace: TraceHandle | null, evalRequest: Eva
   if (!trace) return;
   const entry = pendingTraces.get(trace.id);
   if (!entry) return;
-  entry.evals.push(evalRequest);
+  entry.evals.push({
+    ...evalRequest,
+    input: summarizeForTelemetry(evalRequest.input),
+    output: summarizeForTelemetry(evalRequest.output),
+  });
 }
 
 export async function flushOpik() {
