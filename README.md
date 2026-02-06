@@ -1,97 +1,51 @@
 # Mirror Twin
 
-A daily self‑improvement companion that blends journaling, streak analytics, strategy prompts, and AI motivation to keep users consistent.
+## Mirror Twin (Intro)
+Mirror Twin is a daily accountability companion that speaks as your future self.  
+You log quick entries, and the app responds with grounded motivation tailored to your goal.  
+It tracks real effort over perfection, so progress feels fair and sustainable.  
+Stage-based strategies keep the next step clear and small.  
+The result is a light, repeatable loop that builds momentum without guilt.  
+Designed for privacy and safety, it keeps outputs helpful and concise.  
 
-## Demo
-
-Add a short demo video or GIF here.
-
-## Features
-
-- Guided setup for name, resolution, and struggles
-- Daily journaling with a 5‑entry limit
-- Streak and consistency dashboard widgets
-- AI agent orchestration for daily motivation + progress evaluation
-- Opik observability with traces, spans, and LLM‑as‑judge evaluations
-- Strategy checklist tailored to evolution stage
-- Chat with your “future self”
+## Links
+1. Live demo: `ADD_LIVE_DEMO_URL`
+2. Video walkthrough: `ADD_VIDEO_URL`
 
 ## Tech Stack
-
 - React + TypeScript + Vite
 - Tailwind CSS
-- AI agents powered by Google Gemini
-  - Daily motivation agent
-  - Progress evaluation agent
-  - Strategy observer + strategist
-- Opik for tracing, evaluation, and experiment tracking
+- Google Gemini (generation + evaluation)
+- Opik (tracing + evals)
+
+## Architecture Diagram
+![Mirror Twin Architecture](public/architecture.png)
+
+## Opik Observability
+Mirror Twin logs each agent run as a trace with spans for LLM calls.  
+LLM-as-judge scoring tracks relevance and usefulness across:
+- Motivation output
+- Chat twin replies
+- Progress evaluations  
+This makes it easy to detect drift, compare prompt versions, and improve quality.
 
 ## Getting Started
-
 1. Install dependencies:
    - `bun install`
-2. Create a `.env` from the example:
+2. Create a `.env`:
    - `cp .env.example .env`
-3. Add your API keys to `.env`
-4. Start the dev server:
+3. Set environment variables:
+   - `VITE_GEMINI_API_KEY`
+   - `VITE_CLERK_PUBLISHABLE_KEY` (optional)
+   - `VITE_OPIK_API_KEY`
+   - `VITE_OPIK_PROJECT_NAME`
+4. Run the app:
    - `bun run dev`
 
-## Environment Variables
-
-- `VITE_GEMINI_API_KEY`
-- `VITE_CLERK_PUBLISHABLE_KEY` (if using Clerk)
-- `VITE_OPIK_API_KEY`
-- `VITE_OPIK_PROJECT_NAME`
-- `VITE_OPIK_WORKSPACE_NAME`
-- `VITE_OPIK_URL_OVERRIDE`
-- `VITE_OPIK_EVALS_ENABLED` (set `true` to enable LLM‑as‑judge scoring)
-- `VITE_OPIK_EVAL_MODEL` (optional, defaults to Opik metric defaults)
-
-## Scripts
-
-- `bun run dev`
-- `bun run build`
-- `bun run preview`
-
-## AI Agent Architecture
-
-Mirror Twin is built around a small multi‑agent workflow that runs daily:
-
-- **Observer agent**: analyzes recent journal entries and patterns
-- **Strategy agent**: recommends tactical actions for the current evolution stage
-- **Motivation agent**: generates a personalized daily motivation summary
-- **Progress evaluator**: scores daily progress from entries (0–7)
-
-## Evaluation & Observability (Opik)
-
-Mirror Twin logs agent runs to Opik with traces + spans and evaluates output quality with LLM‑as‑judge metrics:
-
-- Motivation: relevance + usefulness
-- Chat twin responses: relevance + usefulness
-- Progress evaluation: relevance + usefulness
-
-These scores are recorded as feedback on each trace to track quality over time and compare prompt/model changes.
-
-### Hackathon Criteria Alignment
-
-- **Functionality**: core loop works end‑to‑end (setup → journal → progress → chat → strategies).
-- **Real‑world relevance**: focuses on consistent daily habits and New Year’s goals.
-- **LLMs/Agents**: daily agent orchestration + LLM‑driven motivation, evaluation, and coaching.
-- **Evaluation & observability**: Opik traces, spans, and LLM‑as‑judge metrics logged per agent run.
-- **Goal alignment**: prompt versions and run metadata are tagged to compare experiments over time.
-
-### Opik Workflow (for judges)
-
-1. Start Opik ingest server: `bun run dev:opik`
-2. Start the app: `bun run dev`
-3. Use the app (log entries, run progress, chat)
-4. Open Opik and filter by `metadata.runId` or agent names:
-   - `agent.motivation`
-   - `agent.progress_evaluator`
-   - `agent.chat_twin`
-   - `agent.orchestrator`
-
-### Experiment Tracking
-
-Prompt and agent versions are tagged in trace metadata (`promptVersion`, `orchestratorVersion`).  
-To compare changes, update these version strings and run again—Opik will show side‑by‑side metrics.
+## Verified Scenarios
+- Setup flow: name + resolution + struggles -> main dashboard
+- Daily log: entry saved, streak increments
+- Progress evaluation: returns `progressDelta` and reason
+- Mirror Twin chat: responds to the latest user message
+- Motivation agent: generates a short, grounded summary
+- Opik telemetry: traces and evals appear in the Opik UI
