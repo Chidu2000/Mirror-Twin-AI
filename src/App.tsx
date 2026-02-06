@@ -42,7 +42,7 @@ export default function App() {
                 </span>
               </h1>
               <p className="mt-6 text-lg text-[var(--muted)] leading-relaxed max-w-xl">
-                Log the day in 60 seconds. Your future self replies with the push you actually need,
+                Log your daily progress. Your future self replies with the push you actually need,
                 then keeps you consistent with streaks, strategy nudges, and real progress.
               </p>
               <div className="mt-8 flex flex-wrap gap-4 items-center">
