@@ -1,6 +1,5 @@
 # Mirror Twin
 
-## Mirror Twin (Intro)
 Mirror Twin is a daily accountability companion that speaks as your future self.  
 You log quick entries, and the app responds with grounded motivation tailored to your goal.  
 It tracks real effort over perfection, so progress feels fair and sustainable.  
@@ -19,7 +18,7 @@ Designed for privacy and safety, it keeps outputs helpful and concise.
 - Opik (tracing + evals)
 
 ## Architecture Diagram
-![Mirror Twin Architecture](public/architecture.png)
+![Mirror Twin Architecture](./public/architecture.png)
 
 ## Opik Observability
 Mirror Twin logs each agent run as a trace with spans for LLM calls.  
