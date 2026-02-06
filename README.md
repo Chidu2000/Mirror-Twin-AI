@@ -41,10 +41,3 @@ This makes it easy to detect drift, compare prompt versions, and improve quality
 4. Run the app:
    - `bun run dev`
 
-## Verified Scenarios
-- Setup flow: name + resolution + struggles -> main dashboard
-- Daily log: entry saved, streak increments
-- Progress evaluation: returns `progressDelta` and reason
-- Mirror Twin chat: responds to the latest user message
-- Motivation agent: generates a short, grounded summary
-- Opik telemetry: traces and evals appear in the Opik UI
