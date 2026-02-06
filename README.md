@@ -13,9 +13,9 @@ Designed for privacy and safety, it keeps outputs helpful and concise.
 3. Pitch deck: `ADD_PITCH_DECK_URL`
 
 ## Tech Stack
-- React + TypeScript + Vite
+- React + Node.js + TypeScript + Vite
 - Tailwind CSS
-- Google Gemini (generation + evaluation)
+- Google Gemini (generation + evaluation) powered AI agents
 - Opik (tracing + evals)
 
 ## Architecture Diagram
