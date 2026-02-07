@@ -9,8 +9,8 @@ Designed for privacy and safety, it keeps outputs helpful and concise.
 
 ## Links
 1. Live demo: [mirror-twin-eight.vercel.app](https://mirror-twin-eight.vercel.app)
-2. Video walkthrough: `ADD_VIDEO_URL`
-3. Pitch deck: `ADD_PITCH_DECK_URL`
+2. Video walkthrough: 
+3. Pitch deck: [Google Slides Deck](https://docs.google.com/presentation/d/1iJcCY80IMoNi0IBxnfVyjxTzkhIEQwFo/edit?usp=sharing&ouid=116809709015347870625&rtpof=true&sd=true)
 
 ## Tech Stack
 - React + Node.js + TypeScript + Vite
