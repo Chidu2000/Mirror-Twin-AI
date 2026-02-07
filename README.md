@@ -21,6 +21,13 @@ Designed for privacy and safety, it keeps outputs helpful and concise.
 ## Architecture Diagram
 ![Mirror Twin Architecture](./public/architecture.png)
 
+## Agent Deep Dive
+- **Orchestrator**: Coordinates daily runs, routes inputs to the right agents, and aggregates outputs.
+- **Motivation Agent**: Generates a short, grounded motivation message tailored to the user’s stage.
+- **Progress Evaluator**: Scores daily effort (0–7) from journal entries and provides a brief reason.
+- **Strategy Agent**: Suggests small, actionable steps aligned with the current evolution stage.
+- **Chat Twin**: Replies as the future self, using recent context to keep the user on track.
+
 ## Opik Observability
 Mirror Twin logs each agent run as a trace with spans for LLM calls.  
 LLM-as-judge scoring tracks relevance and usefulness across:
@@ -41,4 +48,3 @@ This makes it easy to detect drift, compare prompt versions, and improve quality
    - `VITE_OPIK_PROJECT_NAME`
 4. Run the app:
    - `bun run dev`
-
