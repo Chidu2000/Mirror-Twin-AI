@@ -8,7 +8,7 @@ The result is a light, repeatable loop that builds momentum without guilt.
 Designed for privacy and safety, it keeps outputs helpful and concise.  
 
 ## Links
-1. Live demo: `ADD_LIVE_DEMO_URL`
+1. Live demo: `https://mirror-twin-eight.vercel.app`
 2. Video walkthrough: `ADD_VIDEO_URL`
 3. Pitch deck: `ADD_PITCH_DECK_URL`
 
