@@ -52,7 +52,7 @@ export default function App() {
                   </button>
                 </SignInButton>
                 <div className="text-sm text-[var(--muted)]">
-                  Built for "Commit to Change" Hackathon. Powered by Gemini 2.5 Flash &amp; Opik Observability.
+                  Built for "Commit to Change" Hackathon. Powered by Gemini-3-flash-preview &amp; Opik Observability.
                 </div>
               </div>
             </div>
